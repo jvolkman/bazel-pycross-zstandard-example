@@ -1,0 +1,69 @@
+"""bazel-pycross-zstandard-example"""
+
+module(
+    name = "bazel-pycross-zstandard-example",
+    version = "0.1.0",
+    compatibility_level = 1,
+)
+
+# Deps
+bazel_dep(name = "hermetic_cc_toolchain", version = "2.2.1")
+bazel_dep(name = "platforms", version = "0.0.8")
+bazel_dep(name = "rules_cc", version = "0.0.9")
+bazel_dep(name = "rules_python", version = "0.28.0")
+bazel_dep(name = "rules_pycross", version = "0.5.2")
+
+# CC toolchain
+
+toolchains = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
+use_repo(toolchains, "zig_sdk")
+
+register_toolchains(
+    "@zig_sdk//toolchain:linux_amd64_gnu.2.17",
+    "@zig_sdk//toolchain:linux_arm64_gnu.2.17",
+    "@zig_sdk//toolchain:darwin_amd64",
+    "@zig_sdk//toolchain:darwin_arm64",
+)
+
+# Python
+
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+python.toolchain(python_version = "3.9.18")
+python.toolchain(python_version = "3.10.13")
+python.toolchain(python_version = "3.11.6")
+python.toolchain(python_version = "3.12.0", is_default=True)
+
+# Third-party deps (zstd)
+
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+http_archive(
+    name = "zstd",
+    build_file = "//:zstd.BUILD",
+    sha256 = "9c4396cc829cfae319a6e2615202e82aad41372073482fce286fac78646d3ee4",
+    strip_prefix = "zstd-1.5.5",
+    urls = ["https://github.com/facebook/zstd/releases/download/v1.5.5/zstd-1.5.5.tar.gz"],
+)
+
+# Pycross
+
+# Use the lock_import extension to import from PDM.
+lock_import = use_extension("@rules_pycross//pycross/extensions:lock_import.bzl", "lock_import")
+lock_import.import_pdm(
+    default_alias_single_version = True,
+    lock_file = "@//:pdm.lock",
+    project_file = "@//:pyproject.toml",
+    repo = "pdm",
+)
+
+# Override the zstandard package and tell it to always build
+# using our own build target.
+lock_import.package(
+    name = "zstandard",
+    always_build = True,
+    build_target = "@//:zstandard_build",
+    repo = "pdm",
+)
+
+# The actual repos are loaded from the lock_repos extension.
+lock_repos = use_extension("@rules_pycross//pycross/extensions:lock_repos.bzl", "lock_repos")
+use_repo(lock_repos, "pdm")

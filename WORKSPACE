@@ -1,0 +1,1 @@
+# Marks the root of a Bazel repository.

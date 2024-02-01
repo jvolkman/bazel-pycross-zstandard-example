@@ -1,0 +1,18 @@
+# PDM dependencies
+
+[project]
+name = "bazel-pycross-zstandard-example"
+version = "0.1"
+description = "Example using Bazel + rules_pycross + Zig to build a wheel."
+authors = []
+dependencies = [
+    "setuptools==68.2.2",
+    "wheel==0.41.3",
+    "zstandard==0.22.0",
+]
+requires-python = ">=3.9, <3.13"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-pep517>=1.0.0"]
+build-backend = "pdm.pep517.api"
