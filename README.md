@@ -1,6 +1,6 @@
 # bazel-pycross-zstandard-example
 
-This is example of builds the [zstandard](https://pypi.org/project/zstandard/) project cross-python version, cross-os, and cross-machine using the following tools:
+This example builds the [zstandard](https://pypi.org/project/zstandard/) project cross-python-version, cross-os, and cross-machine using the following tools:
 
 * [Bazel](https://bazel.build/)
 * [python-build-standalone](https://github.com/indygreg/python-build-standalone) (via [rules_python](https://github.com/bazelbuild/rules_python))
