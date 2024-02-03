@@ -13,7 +13,7 @@ To use:
 * Run tests: `./run_tests.sh cp39` (or `cp310`, `cp311`, `cp312`)
 * Build a wheel: `./build_wheel.sh cp39 linux-aarch64` (see usage for other platforms)
 
-Built extensions are dynamically linked to `libzstd` which is vendored in the built wheel after running through `repairwheel`.
+Built extensions are dynamically linked to an [in-built](zstd.BUILD) `libzstd` which is vendored in the built wheel after running through `repairwheel`.
 
 Wheel builds are (or at least should be) fully reproducible - even
 when built on different build host platforms. I.e., the `macos-aarch64` wheen should have the same sha256 hash whether it was built on macOS or on linux.
